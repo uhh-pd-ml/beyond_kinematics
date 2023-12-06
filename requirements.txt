@@ -1,0 +1,45 @@
+dcor
+fsspec
+h5py
+matplotlib
+pandas
+pyarrow
+scikit-learn
+seaborn
+tables
+zuko
+
+# -------- hep stuff -------
+awkward>=2.5
+energyflow
+fastjet
+jetnet
+law
+uproot>=5
+weaver-core>=0.4
+
+# --------- pytorch --------- #
+lightning
+pytorch-lightning
+torchdyn
+torchmetrics
+torchvision
+
+# --------- hydra --------- #
+hydra-colorlog==1.2.0
+hydra-core==1.3.2
+hydra-optuna-sweeper==1.2.0
+
+# --------- loggers --------- #
+comet-ml
+wandb
+
+# --------- dev tools & others --------- #
+black
+isort
+pre-commit      # hooks for applying linters on commit
+pylint
+pyrootutils     # standardizing the project root setup
+pytest          # tests
+rich            # beautiful text formatting in terminal
+ruff

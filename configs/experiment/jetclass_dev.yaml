@@ -1,0 +1,107 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=jetclass
+
+defaults:
+  - override /data: jetclass.yaml
+  - override /model: flow_matching.yaml
+  - override /callbacks: jetclass.yaml
+  - override /trainer: ddp.yaml
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+# add here checkpoint to continue training
+# ckpt_path: /beegfs/desy/user/birkjosc/epic-fm/logs/jetclass_cond_jettype/runs/2023-08-10_16-36-26/checkpoints/last-EMA.ckpt
+
+tags: ["flow_matching", "JetClass", "cond"]
+
+run_note: ""
+
+seed: 160397
+
+trainer:
+  min_epochs: 1
+  max_epochs: 2
+  gradient_clip_val: 0.5
+
+# setting load_weights_from will load the weights from the given checkpoint, but start training from scratch
+load_weights_from: /beegfs/desy/user/birkjosc/epic-fm/logs/jetclass/runs/2023-10-03_08-48-00/evaluated_ckpts/epoch_499/epoch_499.ckpt
+
+model:
+  num_particles: 128
+  global_cond_dim: 12 # needs to be calculated when using conditioning (= number of jet types + additional conditioning variables)
+  local_cond_dim: 0
+  features: 13  # = 3 + number of `additional_part_features` (see below)
+  layers: 20 # default is 6
+  hidden_dim: 300 # default is 128
+  latent: 16 # default is 10
+  scheduler:
+    warmup: 20
+    max_iters: 500
+
+data:
+  loss_per_jettype: true
+  # data_dir: /beegfs/desy/user/birkjosc/datasets/jetclass_h5_all_features_3Mtrain_100kval_500ktest_top_only/
+  conditioning_gen_filename: /beegfs/desy/user/birkjosc/datasets/jetclass_cond_gen_data/kde_jet_features_npart_pt_eta_100_000_pertype_new.h5
+  # preprocessing
+  # list of the following: QCD, Hbb, Hcc, Hgg, H4q, Hqql, Zqq, Wqq, Tbqq, Tbl
+  # used_jet_types: [Tbqq] # null means all jet types
+  number_of_used_jets: 30_000  # training jets
+  number_of_used_jets_val: 8_000  # validation jets
+  normalize: True
+  normalize_sigma: 5
+  # conditioning
+  conditioning_pt: True
+  conditioning_energy: False
+  conditioning_eta: True
+  conditioning_mass: False
+  conditioning_num_particles: False
+  conditioning_jet_type: True
+  conditioning_jet_type_all: True  # if true, all jet types are used for conditioning even if trained on only some of them (see `used_jet_types` above)
+  additional_part_features:
+    - part_d0val
+    - part_d0err
+    - part_dzval
+    - part_dzerr
+    - part_charge
+    - part_isChargedHadron
+    - part_isNeutralHadron
+    - part_isPhoton
+    - part_isElectron
+    - part_isMuon
+    # - part_energyrel
+
+callbacks:
+  ema:
+    decay: 0.999
+    apply_ema_every_n_steps: 1
+    start_step: 0
+    save_ema_weights_in_callback_state: True
+    evaluate_ema_weights_instead: True
+  jetclass_eval:
+    every_n_epochs: 100 # evaluate every n epochs
+    additional_eval_epochs: [0, 1, 2, 30, 75] # evaluate at these epochs as well
+    num_jet_samples: 1000 # jet samples to generate
+  generation_config:
+    batch_size: 100
+    ode_solver: "midpoint"
+    ode_steps: 100
+    verbose: False
+
+  #early_stopping:
+  #  monitor: "val/loss"
+  #  patience: 2000
+  #  mode: "min"
+
+task_name: "jetclass"
+
+logger:
+  wandb:
+    tags: ${tags}
+    group: "flow_matching_jetclass"
+    name: ${task_name}
+  comet:
+    experiment_name: jetclass_dev
+    project_name: "flow-matching"

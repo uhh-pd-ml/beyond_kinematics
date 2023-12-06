@@ -1,0 +1,6 @@
+_target_: src.data.jetclass_classifier_datamodule.JetClassClassifierDataModule
+data_dir: ${paths.data_dir}
+data_file: null
+batch_size: 128
+num_workers: 32
+pin_memory: False

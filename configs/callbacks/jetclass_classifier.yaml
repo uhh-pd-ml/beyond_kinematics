@@ -1,0 +1,24 @@
+defaults:
+  - model_checkpoint_default.yaml
+  - model_summary.yaml
+  - lr_monitor.yaml
+  - rich_progress_bar.yaml
+  - jetclass_eval_classifier.yaml
+  - _self_
+
+model_checkpoint:
+  dirpath: ${paths.output_dir}/checkpoints
+  filename: "loss_{val_loss:.5f}_epoch_{epoch:03d}"
+  monitor: "val_loss"
+  mode: "min"
+  save_last: True
+  auto_insert_metric_name: False
+  save_top_k: 15 # save k best models (determined by above metric)
+
+early_stopping:
+ monitor: "val_loss"
+ patience: 20
+ mode: "min"
+
+model_summary:
+  max_depth: -1

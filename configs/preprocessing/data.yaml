@@ -1,0 +1,85 @@
+# config for dataset preparation
+
+# path to the directory containing the JetClass dataset (the directory
+# should contain the subdirectories 'train_100M', 'val_5M', and 'test_20M'
+# which you obtain when downloading and unpacking the dataset)
+filepath_base: <path_to_JetClass_dataset>
+# the directory where you want to store the preprocessed dataset
+output_dir: <path_to_output_dir>
+
+git_hash: null  # has to be here as placeholder (will be overwritten)
+root_files: null # has to be here as placeholder (will be overwritten)
+
+# each file contains 100k jets
+# so 5 files means 500k jets per process --> 5M jets in total when using all 10 processes
+n_files_per_process:
+  # use too large number to ensure all files are used
+  train_100M: 1
+  val_5M: 1
+  test_20M: 1
+
+# n_files_per_process: 1
+# num_jets_per_file: 1000  # use for creating small debugging/testing datasets
+
+include_jet_type: true  # if true, the jet_type variable will be added as the very first jet variable
+include_ptrel: true     # if true, the ptrel variable will be added to the particle variables
+include_energyrel: true # if true, the erel variable will be added to the particle variables
+include_etarel: true    # if true, the etarel variable will be added to the particle variables
+
+remove_etarel_tails: true  # if true, particles with |eta - jet_eta| > 1 will be padded with zeros
+
+features:
+  names_part_features:
+    - part_deta
+    - part_dphi
+    - part_pt
+    - part_energy
+    - part_eta
+    - part_phi
+    - part_d0val
+    - part_d0err
+    - part_dzval
+    - part_dzerr
+    - part_charge
+    - part_isChargedHadron
+    - part_isNeutralHadron
+    - part_isPhoton
+    - part_isElectron
+    - part_isMuon
+    - part_px
+    - part_py
+    - part_pz
+  names_jet_features:
+    - jet_sdmass
+    - jet_pt
+    - jet_eta
+    - jet_phi
+    - jet_energy
+    - jet_nparticles
+    - jet_tau1
+    - jet_tau2
+    - jet_tau3
+    - jet_tau4
+  names_labels:
+    - label_QCD
+    - label_Hbb
+    - label_Hcc
+    - label_Hgg
+    - label_H4q
+    - label_Hqql
+    - label_Zqq
+    - label_Wqq
+    - label_Tbqq
+    - label_Tbl
+
+processes:
+  - ZJetsToNuNu  # QCD jets
+  - HToBB
+  # - HToCC
+  # - HToGG
+  # - HToWW4Q
+  # - HToWW2Q1L
+  # - ZToQQ
+  # - WToQQ
+  # - TTBar  # Top jets (hadronic decay)
+  # - TTBarLep
