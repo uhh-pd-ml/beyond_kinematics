@@ -101,9 +101,9 @@ def main():
     # generate samples from the kde models
     for i in range(N_JET_TYPES):
         # load the model and preprocessing parameters
-        with open(f"models/kde_model_jet_type_{i}.pkl", "rb") as f:  # nosec
+        with open(f"scripts/models/kde_model_jet_type_{i}.pkl", "rb") as f:  # nosec
             kde_model_eta = pickle.load(f)  # nosec
-        with open(f"models/preprocessing_params_jet_type_{i}.yaml") as f:  # nosec
+        with open(f"scripts/models/preprocessing_params_jet_type_{i}.yaml") as f:  # nosec
             preprocessing_params = yaml.load(f, Loader=yaml.FullLoader)  # nosec
 
         # set seed for sklearn
@@ -171,7 +171,7 @@ def main():
     print("Loading model")
     model = SetFlowMatchingLitModule.load_from_checkpoint(MODEL_CHECKPOINT)
     # load means and stds from yaml
-    with open("models/means_stds.yaml") as f:
+    with open("scripts/models/means_stds.yaml") as f:
         means_stds_dict = OmegaConf.load(f)
         used_means = means_stds_dict["means"]
         used_stds = means_stds_dict["stds"]

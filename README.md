@@ -28,15 +28,32 @@ This repository contains the code for the results presented in the paper
 
 ## How to run the code
 
+
+### Generating jets (without installation)
+
 If you just want to generate new jets with our model (i.e. for comparisons with
 future work), the required setup is minimal and doesn't need an installation
 if you use the provided Docker image.
 
+```shell
+git clone git@github.com:uhh-pd-ml/beyond_kinematics.git
+cd beyond_kinematics
+singularity shell --nv docker://jobirk/pytorch-image:v0.2.2
+source /opt/conda/bin/activate
+python scripts/generate_jets.py \
+    --output_dir <path_to_output_dir> \
+    --n_jets_per_type <number_of_jets_to_generate_per_type> \
+    --types <list_of_jet_types>
+```
+
+If you want to play around with the code, or don't want to use the Docker image,
+you can follow the instructions below.
+
 ### Clone repository and setup environment
 
 ```shell
-git clone https://github.com/YourGithubName/your-repo-name
-cd your-repo-name
+git clone git@github.com:uhh-pd-ml/beyond_kinematics.git
+cd beyond_kinematics
 ```
 
 Create a `.env` file in the root directory to set paths and API keys
